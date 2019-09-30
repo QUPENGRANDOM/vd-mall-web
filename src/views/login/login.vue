@@ -1,6 +1,7 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+             label-position="left">
 
       <div class="title-container">
         <h3 class="title">写代码不一定让我快乐</h3>
@@ -18,26 +19,50 @@
         </el-input>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
+      <el-row>
+        <el-col :span="18">
+          <el-form-item prop="validateCode">
+            <el-input placeholder="请输入验证码" v-model="loginForm.validateCode"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" style="color: #f4f4f5;text-align: center">
+          <div style="line-height: 1;font-size: 18px;padding: 15px;background: radial-gradient(black, transparent);">
+            <img :src="validateCodeUrl" v-on:click="refreshValidateCode"/>
+          </div>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="12">
+          <el-checkbox v-model="loginForm.remember" class="remember-me">记住我</el-checkbox>
+        </el-col>
+        <el-col :span="12" class="forget-pwd-container"><a>忘记密码?</a></el-col>
+      </el-row>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;"
+                 @click.native.prevent="handleLogin">登录
+      </el-button>
     </el-form>
   </div>
 </template>
 <script>
 import {login} from '@/api/login'
+
 export default {
   name: 'Login',
   data () {
     return {
       loginForm: {
         username: 'tongtong',
-        password: 'admin'
+        password: 'admin',
+        validateCode: '',
+        remember: true
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur' }],
-        password: [{ required: true, trigger: 'blur' }]
+        username: [{required: true, trigger: 'blur'}],
+        password: [{required: true, trigger: 'blur'}]
       },
       loading: false,
-      passwordType: 'password',
+      validateCodeUrl: '/refresh',
       redirect: undefined
     }
   },
@@ -54,20 +79,23 @@ export default {
       this.loading = true
       login(this.loginForm).then((res) => {
         if (res && res.data.code === '200') {
-          this.$router.push({ path: '/home' || '/' })
+          this.$router.push({path: '/home' || '/'})
         }
         this.loading = false
       }).catch(() => {
         this.loading = false
       })
+    },
+    refreshValidateCode () {
+      this.validateCodeUrl = `/refresh?code=${new Date().getTime()}`
     }
   }
 }
 </script>
 
 <style lang="scss">
-  $bg:#283443;
-  $light_gray:#fff;
+  $bg: #283443;
+  $light_gray: #fff;
   $cursor: #fff;
 
   @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
@@ -100,14 +128,18 @@ export default {
       border-radius: 5px;
       color: #454545;
     }
+
+    .el-checkbox__input.is-checked + .el-checkbox__label {
+      color: #C0C4CC;
+    }
   }
 
 </style>
 
 <style lang="scss" scoped>
-  $bg:#2d3a4b;
-  $dark_gray:#889aa4;
-  $light_gray:#eee;
+  $bg: #2d3a4b;
+  $dark_gray: #889aa4;
+  $light_gray: #eee;
 
   .login-container {
     min-height: 100%;
@@ -136,6 +168,21 @@ export default {
       }
     }
 
+    .remember-me {
+      margin-bottom: 5px;
+      color: #C0C4CC;
+    }
+
+    .forget-pwd-container {
+      text-align: right;
+      font-size: 12px;
+      color: #C0C4CC;
+
+      a {
+        cursor: pointer;
+      }
+    }
+
     .svg-container {
       padding: 6px 5px 6px 15px;
       color: $dark_gray;
@@ -150,20 +197,10 @@ export default {
       .title {
         font-size: 26px;
         color: $light_gray;
-        margin: 0px auto 40px auto;
+        margin: 0 auto 40px auto;
         text-align: center;
         font-weight: bold;
       }
-    }
-
-    .show-pwd {
-      position: absolute;
-      right: 10px;
-      top: 7px;
-      font-size: 16px;
-      color: $dark_gray;
-      cursor: pointer;
-      user-select: none;
     }
   }
 </style>
