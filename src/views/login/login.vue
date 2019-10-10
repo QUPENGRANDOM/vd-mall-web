@@ -62,7 +62,7 @@ export default {
         password: [{required: true, trigger: 'blur'}]
       },
       loading: false,
-      validateCodeUrl: '/refresh',
+      validateCodeUrl: '/admin/api/v1/code/refresh',
       redirect: undefined
     }
   },
@@ -87,7 +87,7 @@ export default {
       })
     },
     refreshValidateCode () {
-      this.validateCodeUrl = `/refresh?code=${new Date().getTime()}`
+      this.validateCodeUrl = `/admin/api/v1/code/refresh?code=${new Date().getTime()}`
     }
   }
 }
