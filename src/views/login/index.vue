@@ -52,14 +52,14 @@ export default {
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('请您输入正确的用户名'))
       } else {
         callback()
       }
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+        callback(new Error('您输入的密码格式不正确'))
       } else {
         callback()
       }
@@ -133,6 +133,9 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  .el-card__body{
+    padding: 0;
+  }
   .el-input {
     display: inline-block;
     height: 47px;
@@ -168,12 +171,13 @@ $cursor: #fff;
 $bg: #f5f5f5;
 $dark_gray:#889aa4;
 $light_gray:#eee;
-
 .login-container {
-  min-height: 100%;
-  width: 100%;
-  background-color: $bg;
-  overflow: hidden;
+  position: absolute;
+  right: 160px;
+  top: 45%;
+  -webkit-transform: translateY(-60%);
+  transform: translateY(-60%);
+  z-index: 2;
 
   .login-form {
     position: relative;
@@ -190,14 +194,7 @@ $light_gray:#eee;
     /* -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); */
     /* box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); */
   }
-  .el-card{
-    border:0;
 
-    .is-always-shadow {
-      -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,0);
-      box-shadow: 0 0 0 0 rgba(0,0,0,0)
-    }
-  }
   .tips {
     font-size: 14px;
     color: #fff;
