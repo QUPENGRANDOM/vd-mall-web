@@ -1,17 +1,14 @@
 <template>
-  <div>
-    <img :src="login_background_image" class="login-center-layout" >
+  <vue-particle-line>
     <el-card class="login-container">
-      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
+      <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="right">
         <div class="title-container">
           <h3 class="title">V分销商城后台管理系统</h3>
         </div>
-
         <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
+          <span class="svg-container">
+            <svg-icon icon-class="user" />
+          </span>
           <el-input
             ref="username"
             v-model="loginForm.username"
@@ -24,9 +21,9 @@
         </el-form-item>
 
         <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
           <el-input
             :key="passwordType"
             ref="password"
@@ -39,19 +36,17 @@
             @keyup.enter.native="handleLogin"
           />
           <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-        </span>
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
         </el-form-item>
 
         <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
       </el-form>
     </el-card>
-  </div>
+  </vue-particle-line>
 </template>
-
 <script>
 import { validUsername } from '@/utils/validate'
-import login_background_image from '@/assets/images/da384bf2b93e33445d1c2df692a3e783.jpg'
 export default {
   name: 'Login',
   data() {
@@ -80,7 +75,6 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      login_background_image,
       redirect: undefined
     }
   },
@@ -171,7 +165,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
+$bg: #f5f5f5;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 
@@ -185,11 +179,25 @@ $light_gray:#eee;
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 35px 35px 0;
     margin: 0 auto;
     overflow: hidden;
+    z-index: 2;
+    background-color: #5a5a5a;
+    border-radius: 6px;
   }
+  .el-card.is-always-shadow, .el-card.is-hover-shadow:focus, .el-card.is-hover-shadow:hover {
+    /* -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); */
+    /* box-shadow: 0 2px 12px 0 rgba(0,0,0,.1); */
+  }
+  .el-card{
+    border:0;
 
+    .is-always-shadow {
+      -webkit-box-shadow: 0 0 0 0 rgba(0,0,0,0);
+      box-shadow: 0 0 0 0 rgba(0,0,0,0)
+    }
+  }
   .tips {
     font-size: 14px;
     color: #fff;
