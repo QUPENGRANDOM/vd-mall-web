@@ -1,9 +1,24 @@
-import httpRequest from '@/utils/httpRequest'
+import request from '@/utils/request'
 
-export function getUserList () {
-  return httpRequest.get(`/admin/api/v1/users`)
+export function login(data) {
+  return request({
+    url: '/vue-admin-template/user/login',
+    method: 'post',
+    data
+  })
 }
 
-export function getLoginUserInfo () {
-  return httpRequest.get(`/admin/api/v1/users/current`)
+export function getInfo(token) {
+  return request({
+    url: '/vue-admin-template/user/info',
+    method: 'get',
+    params: { token }
+  })
+}
+
+export function logout() {
+  return request({
+    url: '/vue-admin-template/user/logout',
+    method: 'post'
+  })
 }
