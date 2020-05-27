@@ -3,7 +3,7 @@
     <el-card class="login-container">
       <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="right">
         <div class="title-container">
-          <h3 class="title">V分销商城后台管理系统</h3>
+          <h3 class="title">微分销商城后台管理系统</h3>
         </div>
         <el-form-item prop="username">
           <span class="svg-container">
@@ -58,7 +58,7 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
+      if (value.length < 5) {
         callback(new Error('您输入的密码格式不正确'))
       } else {
         callback()
@@ -66,8 +66,8 @@ export default {
     }
     return {
       loginForm: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: 'admin'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
@@ -108,7 +108,7 @@ export default {
             this.loading = false
           })
         } else {
-          console.log('error submit!!')
+          console.log('登录失败')
           return false
         }
       })

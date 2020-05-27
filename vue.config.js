@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || '微分销商城' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -35,6 +35,12 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    proxy: {
+      '/sso-platform': {
+        target: 'http://localhost:8080/',
+        changeOrigin: true
+      }
     }
   },
   configureWebpack: {
