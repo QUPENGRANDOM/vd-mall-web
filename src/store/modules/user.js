@@ -31,11 +31,9 @@ const user = {
     // user login
     login({ commit }, userInfo) {
       const { username, password } = userInfo
-      debugger
       return new Promise((resolve, reject) => {
         login({ username: username.trim(), password: password }).then(response => {
           const { data } = response
-          debugger
           commit('SET_TOKEN', data)
           setToken(data)
           resolve()
@@ -54,7 +52,6 @@ const user = {
           if (!data) {
             reject('Verification failed, please Login again.')
           }
-          debugger
           const { nickname, avatar } = data
 
           commit('SET_NAME', nickname)
