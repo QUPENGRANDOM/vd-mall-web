@@ -10,9 +10,16 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: `/api/v1/users/${1}`,
+    method: 'get'
+  })
+}
+
+export function getList(page, size) {
+  return request({
+    url: `/api/v1/users/paging`,
     method: 'get',
-    params: { token }
+    params: { page: page, size: size }
   })
 }
 
