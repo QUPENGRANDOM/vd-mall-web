@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="账号状态" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          <el-tag :type="scope.row.status | statusTypeFilter">{{ scope.row.status | statusContentFilter }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="注册时间">
@@ -94,10 +94,17 @@ import Pagination from '@/components/Pagination'
 export default {
   components: { Pagination },
   filters: {
-    statusFilter(status) {
+    statusTypeFilter(status) {
       const statusMap = {
         ENABLED: 'success',
         DISABLED: 'danger'
+      }
+      return statusMap[status]
+    },
+    statusContentFilter(status) {
+      const statusMap = {
+        ENABLED: '启用',
+        DISABLED: '禁用'
       }
       return statusMap[status]
     },
