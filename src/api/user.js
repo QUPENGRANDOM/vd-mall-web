@@ -10,6 +10,14 @@ export function login(data) {
   })
 }
 
+export function saveUser(data) {
+  return request({
+    url: `${contentPath}`,
+    method: 'post',
+    data
+  })
+}
+
 export function getInfo(token) {
   return request({
     url: `${contentPath}/${1}`,

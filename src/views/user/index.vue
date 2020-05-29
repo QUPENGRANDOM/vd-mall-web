@@ -1,7 +1,13 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.username" placeholder="登录名" style="width: 200px;" class="filter-item" @keyup.enter.native="fetchData" />
+      <el-input
+        v-model="listQuery.username"
+        placeholder="登录名"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="fetchData"
+      />
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="fetchData">
         查询
       </el-button>
@@ -94,6 +100,61 @@
     />
 
     <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户':'添加用户'">
+      <el-form :model="user" label-width="80px" label-position="left">
+        <el-form-item label="登录名">
+          <el-input v-model="user.username" placeholder="登录名" />
+        </el-form-item>
+        <el-form-item label="昵称">
+          <el-input v-model="user.nickname" placeholder="昵称" />
+        </el-form-item>
+        <el-form-item label="手机">
+          <el-input v-model="user.telephone" placeholder="手机" />
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input v-model="user.mail" placeholder="邮箱" />
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-radio v-model="user.sex" label="MEN">男</el-radio>
+          <el-radio v-model="user.sex" label="WOMEN">女</el-radio>
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-switch
+            v-model="user.status"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="ENABLED"
+            inactive-value="DISABLED"
+          />
+        </el-form-item>
+        <el-form-item label="角色信息">
+          <el-select
+            v-model="user.roleIdList"
+            multiple
+            filterable
+            collapse-tags
+            placeholder="请选择..."
+            :loading="rolesLoading"
+            @visible-change="roleListChange($event)"
+          >
+            <el-option
+              v-for="role in roleList"
+              :key="role.id"
+              :label="role.description"
+              :value="role.id"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="所在地">
+          <el-input
+            v-model="user.address"
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入内容"
+          />
+        </el-form-item>
+      </el-form>
+
       <div style="text-align:right;">
         <el-button type="danger" @click="dialogVisible=false">取消</el-button>
         <el-button type="primary" @click="saveOrUpdateUser">确认</el-button>
@@ -103,8 +164,22 @@
 </template>
 
 <script>
-import { getList, updateStatus, deleteUser } from '@/api/user'
+import { getList, updateStatus, deleteUser, saveUser } from '@/api/user'
+import { listRole } from '@/api/role'
 import Pagination from '@/components/Pagination'
+import user from '../../store/modules/user'
+
+const defaultUser = {
+  'address': '',
+  'mail': '',
+  'nickname': '',
+  'password': '',
+  'roleIdList': [],
+  'sex': 'MEN',
+  'status': 'ENABLED',
+  'telephone': '',
+  'username': ''
+}
 
 export default {
   components: { Pagination },
@@ -142,6 +217,8 @@ export default {
         page: 1,
         size: 10
       },
+      user: defaultUser,
+      roleList: ['管理员', '用户'],
       dialogVisible: false,
       dialogType: 'new',
       checkStrictly: false,
@@ -149,7 +226,8 @@ export default {
         children: 'children',
         label: 'title'
       },
-      listLoading: true
+      listLoading: true,
+      rolesLoading: false
     }
   },
   created() {
@@ -165,6 +243,18 @@ export default {
         this.listLoading = false
       })
     },
+    async loadRoleInfos() {
+      this.rolesLoading = true
+      await listRole().then(response => {
+        console.log(response)
+        this.rolesLoading = false
+        this.roleList = response.data
+      })
+    },
+    roleListChange(open) {
+      open ? this.loadRoleInfos() : this.roleList = []
+      console.log(open)
+    },
     deleteUser(row, $index) {
       this.$confirm('确定要删除该用户吗?', '注意', {
         confirmButtonText: '确定',
@@ -179,7 +269,9 @@ export default {
           })
           this.fetchData()
         })
-        .catch(err => { console.error(err) })
+        .catch(err => {
+          console.error(err)
+        })
     },
     enabledUser(row) {
       updateStatus(row.id, 'ENABLED')
@@ -197,7 +289,17 @@ export default {
       this.dialogType = 'edit'
       this.dialogVisible = true
     },
-    saveOrUpdateUser() {}
+    saveOrUpdateUser() {
+      saveUser(this.user).then(response => {
+        console.log(response)
+        this.$message({
+          type: 'success',
+          message: '创建用户成功！'
+        })
+        this.dialogVisible = false
+        this.user = defaultUser
+      })
+    }
   }
 }
 </script>
