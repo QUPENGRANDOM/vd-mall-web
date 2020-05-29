@@ -2,10 +2,10 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.username" placeholder="登录名" style="width: 200px;" class="filter-item" @keyup.enter.native="fetchData" />
-      <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="fetchData">
+      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="fetchData">
         查询
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="createUser">
         新建
       </el-button>
     </div>
@@ -55,7 +55,7 @@
 
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button size="mini" type="primary">
+          <el-button size="mini" type="primary" @click="editUser()">
             编辑
           </el-button>
           <el-button v-if="row.status=== 'ENABLED'" size="mini" type="warning" @click="disabledUser(row)">
@@ -70,7 +70,6 @@
         </template>
       </el-table-column>
     </el-table>
-
     <pagination
       v-show="total>0"
       :total="total"
@@ -78,6 +77,13 @@
       :limit.sync="listQuery.size"
       @pagination="fetchData"
     />
+
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户':'添加用户'">
+      <div style="text-align:right;">
+        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="saveOrUpdateUser">确认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -106,6 +112,13 @@ export default {
       listQuery: {
         page: 1,
         size: 10
+      },
+      dialogVisible: false,
+      dialogType: 'new',
+      checkStrictly: false,
+      defaultProps: {
+        children: 'children',
+        label: 'title'
       },
       listLoading: true
     }
@@ -146,7 +159,16 @@ export default {
     disabledUser(row) {
       updateStatus(row.id, 'DISABLED')
       row.status = 'DISABLED'
-    }
+    },
+    createUser() {
+      this.dialogType = 'new'
+      this.dialogVisible = true
+    },
+    editUser() {
+      this.dialogType = 'edit'
+      this.dialogVisible = true
+    },
+    saveOrUpdateUser() {}
   }
 }
 </script>
