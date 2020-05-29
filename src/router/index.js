@@ -60,7 +60,6 @@ export const constantRoutes = [
     children: [
       {
         path: 'list',
-        name: 'List',
         component: () => import('@/views/user/index'),
         meta: { title: '用户管理', icon: 'form' }
       }
