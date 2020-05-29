@@ -32,6 +32,21 @@
           <span>{{ scope.row.username }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="邮箱" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.mail }}
+        </template>
+      </el-table-column>
+      <el-table-column label="电话" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.telephone }}
+        </template>
+      </el-table-column>
+      <el-table-column label="性别" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.sex | sexFilter }}
+        </template>
+      </el-table-column>
       <el-table-column label="地址" align="center">
         <template slot-scope="scope">
           {{ scope.row.address }}
@@ -110,6 +125,13 @@ export default {
     },
     roleFilter(roles) {
       return roles === null ? '' : roles.toString()
+    },
+    sexFilter(sex) {
+      const sexMap = {
+        MEN: '男',
+        WOMEN: '女'
+      }
+      return sexMap[sex]
     }
   },
   data() {
