@@ -99,7 +99,7 @@
       @pagination="fetchData"
     />
 
-    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户':'添加用户'">
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑用户':'添加用户'" @closed="dialogClosed">
       <el-form :model="user" label-width="80px" label-position="left">
         <el-form-item label="登录名">
           <el-input v-model="user.username" placeholder="登录名" />
@@ -167,6 +167,7 @@
 import { getList, updateStatus, deleteUser, saveUser, updateUser, getInfoById } from '@/api/user'
 import { listRole } from '@/api/role'
 import Pagination from '@/components/Pagination'
+import user from '../../store/modules/user'
 
 const defaultUser = {
   'address': '',
@@ -231,6 +232,7 @@ export default {
   },
   created() {
     this.fetchData()
+    this.loadRoleInfos()
   },
   methods: {
     fetchData() {
@@ -242,6 +244,9 @@ export default {
         this.listLoading = false
       })
     },
+    dialogClosed() {
+      this.user = defaultUser
+    },
     async loadRoleInfos() {
       this.rolesLoading = true
       await listRole().then(response => {
@@ -251,7 +256,8 @@ export default {
       })
     },
     roleListChange(open) {
-      open && this.roleIdList.length === 0 ? this.loadRoleInfos() : this.roleList = []
+      console.log(open)
+      open && (this.roleIdList === undefined || this.roleIdList.length === 0) ? this.loadRoleInfos() : this.roleList = []
     },
     deleteUser(row, $index) {
       this.$confirm('确定要删除该用户吗?', '注意', {
@@ -288,7 +294,6 @@ export default {
       this.dialogVisible = true
       const response = await getInfoById(row.id)
       this.user = response.data
-      this.loadRoleInfos()
       this.user.roleIdList = this.user.roleIds
     },
     async saveOrUpdateUser() {
