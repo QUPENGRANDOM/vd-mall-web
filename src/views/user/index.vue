@@ -76,7 +76,7 @@
 
       <el-table-column label="操作" align="center" width="260" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button size="mini" type="primary" @click="editUser()">
+          <el-button size="mini" type="primary" @click="editUser(row)">
             编辑
           </el-button>
           <el-button v-if="row.status=== 'ENABLED'" size="mini" type="warning" @click="disabledUser(row)">
@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import { getList, updateStatus, deleteUser, saveUser } from '@/api/user'
+import { getList, updateStatus, deleteUser, saveUser, updateUser, getInfoById } from '@/api/user'
 import { listRole } from '@/api/role'
 import Pagination from '@/components/Pagination'
 
@@ -217,7 +217,7 @@ export default {
         size: 10
       },
       user: defaultUser,
-      roleList: ['管理员', '用户'],
+      roleList: [],
       dialogVisible: false,
       dialogType: 'new',
       checkStrictly: false,
@@ -251,8 +251,7 @@ export default {
       })
     },
     roleListChange(open) {
-      open ? this.loadRoleInfos() : this.roleList = []
-      console.log(open)
+      open && this.roleIdList.length === 0 ? this.loadRoleInfos() : this.roleList = []
     },
     deleteUser(row, $index) {
       this.$confirm('确定要删除该用户吗?', '注意', {
@@ -284,20 +283,30 @@ export default {
       this.dialogType = 'new'
       this.dialogVisible = true
     },
-    editUser() {
+    async editUser(row) {
       this.dialogType = 'edit'
       this.dialogVisible = true
+      const response = await getInfoById(row.id)
+      this.user = response.data
+      this.loadRoleInfos()
+      this.user.roleIdList = this.user.roleIds
     },
-    saveOrUpdateUser() {
-      saveUser(this.user).then(response => {
-        console.log(response)
-        this.$message({
-          type: 'success',
-          message: '创建用户成功！'
-        })
-        this.dialogVisible = false
-        this.user = defaultUser
+    async saveOrUpdateUser() {
+      const isEdit = this.dialogType === 'edit'
+      console.log(JSON.stringify(this.user))
+      if (isEdit) {
+        await updateUser(this.user.id, this.user)
+      } else {
+        await saveUser(this.user)
+      }
+      this.$message({
+        type: 'success',
+        message: isEdit ? '编辑' : '创建' + '用户成功！'
       })
+      this.dialogVisible = false
+
+      this.fetchData()
+      this.user = defaultUser
     }
   }
 }

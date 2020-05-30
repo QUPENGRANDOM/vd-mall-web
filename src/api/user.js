@@ -17,10 +17,24 @@ export function saveUser(data) {
     data
   })
 }
+export function updateUser(id, data) {
+  return request({
+    url: `${contentPath}/${id}`,
+    method: 'put',
+    data
+  })
+}
 
 export function getInfo(token) {
   return request({
     url: `${contentPath}/${1}`,
+    method: 'get'
+  })
+}
+
+export function getInfoById(id) {
+  return request({
+    url: `${contentPath}/${id}`,
     method: 'get'
   })
 }
