@@ -167,7 +167,6 @@
 import { getList, updateStatus, deleteUser, saveUser } from '@/api/user'
 import { listRole } from '@/api/role'
 import Pagination from '@/components/Pagination'
-import user from '../../store/modules/user'
 
 const defaultUser = {
   'address': '',
