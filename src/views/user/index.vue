@@ -234,14 +234,15 @@ export default {
     this.loadRoleInfos()
   },
   methods: {
-    fetchData() {
+    async fetchData() {
       this.listLoading = true
-      getList(this.listQuery).then(response => {
-        console.log(response)
-        this.list = response.list
-        this.total = response.total
-        this.listLoading = false
-      })
+      console.log(new Date().getTime())
+      const response = await getList(this.listQuery)
+      console.log(new Date().getTime())
+      console.log(response)
+      this.list = response.list
+      this.total = response.total
+      this.listLoading = false
     },
     dialogClosed() {
       this.user = defaultUser
@@ -251,9 +252,7 @@ export default {
       await listRole().then(response => {
         console.log(response)
         this.rolesLoading = false
-        this.$nextTick(() => {
-          this.roleList = response.data
-        })
+        this.roleList = response.data
       })
     },
     roleListChange(open) {
