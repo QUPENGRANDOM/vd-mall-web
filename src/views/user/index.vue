@@ -167,7 +167,6 @@
 import { getList, updateStatus, deleteUser, saveUser, updateUser, getInfoById } from '@/api/user'
 import { listRole } from '@/api/role'
 import Pagination from '@/components/Pagination'
-import user from '../../store/modules/user'
 
 const defaultUser = {
   'address': '',
@@ -252,7 +251,9 @@ export default {
       await listRole().then(response => {
         console.log(response)
         this.rolesLoading = false
-        this.roleList = response.data
+        this.$nextTick(() => {
+          this.roleList = response.data
+        })
       })
     },
     roleListChange(open) {

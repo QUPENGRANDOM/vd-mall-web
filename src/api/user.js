@@ -27,8 +27,9 @@ export function updateUser(id, data) {
 
 export function getInfo(token) {
   return request({
-    url: `${contentPath}/${1}`,
-    method: 'get'
+    url: `${contentPath}/token`,
+    method: 'get',
+    token
   })
 }
 
