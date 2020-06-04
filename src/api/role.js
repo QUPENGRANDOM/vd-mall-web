@@ -8,3 +8,11 @@ export function listRole() {
     method: 'get'
   })
 }
+
+export function pagingRoles(listQuery) {
+  return request({
+    url: `${contentPath}/paging`,
+    method: 'get',
+    params: listQuery
+  })
+}

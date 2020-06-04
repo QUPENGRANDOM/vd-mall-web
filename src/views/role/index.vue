@@ -8,51 +8,58 @@
       fit
       highlight-current-row
     >
-      <el-table-column align="center" label="ID" width="95">
+      <el-table-column align="center" label="序号" width="60">
         <template slot-scope="scope">
-          {{ scope.$index }}
+          {{ scope.$index + 1 }}
         </template>
       </el-table-column>
-      <el-table-column label="Title">
+      <el-table-column label="角色名" align="center">
         <template slot-scope="scope">
-          {{ scope.row.title }}
+          {{ scope.row.roleName }}
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="110" align="center">
+      <el-table-column label="描述" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.author }}</span>
+          <span>{{ scope.row.description }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Pageviews" width="110" align="center">
+      <el-table-column label="状态" align="center">
         <template slot-scope="scope">
-          {{ scope.row.pageviews }}
+          <el-tag :type="scope.row.status | statusTypeFilter">{{ scope.row.status | statusContentFilter }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
+      <el-table-column label="创建时间" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Display_time" width="200">
-        <template slot-scope="scope">
-          <i class="el-icon-time" />
-          <span>{{ scope.row.display_time }}</span>
+          {{ scope.row.createTime }}
         </template>
       </el-table-column>
     </el-table>
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.size"
+      @pagination="loadData"
+    />
   </div>
 </template>
-
 <script>
-import { getList } from '@/api/table'
-
+import { pagingRoles } from '@/api/role'
+import Pagination from '@/components/Pagination'
 export default {
+  components: { Pagination },
   filters: {
-    statusFilter(status) {
+    statusTypeFilter(status) {
       const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
+        ENABLED: 'success',
+        DISABLED: 'danger'
+      }
+      return statusMap[status]
+    },
+    statusContentFilter(status) {
+      const statusMap = {
+        ENABLED: '启用',
+        DISABLED: '禁用'
       }
       return statusMap[status]
     }
@@ -60,17 +67,23 @@ export default {
   data() {
     return {
       list: null,
+      total: 0,
+      listQuery: {
+        page: 1,
+        size: 10
+      },
       listLoading: true
     }
   },
   created() {
-    this.fetchData()
+    this.loadData()
   },
   methods: {
-    fetchData() {
+    loadData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data.items
+      pagingRoles(this.listQuery).then(response => {
+        this.list = response.list
+        console.log(this.list)
         this.listLoading = false
       })
     }
