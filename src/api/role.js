@@ -16,3 +16,10 @@ export function pagingRoles(listQuery) {
     params: listQuery
   })
 }
+export function updateStatus(id, status) {
+  const path = status.toLowerCase()
+  return request({
+    url: `${contentPath}/${id}/${path}`,
+    method: 'put'
+  })
+}

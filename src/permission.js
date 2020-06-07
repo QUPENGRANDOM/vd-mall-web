@@ -34,7 +34,6 @@ router.beforeEach(async(to, from, next) => {
         try {
           // get user info
           await store.dispatch('getInfo')
-          debugger
           next()
         } catch (error) {
           console.log(error)
