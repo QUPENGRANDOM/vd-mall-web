@@ -9,6 +9,14 @@ export function listRole() {
   })
 }
 
+export function saveRole(data) {
+  return request({
+    url: `${contentPath}`,
+    method: 'post',
+    data
+  })
+}
+
 export function pagingRoles(listQuery) {
   return request({
     url: `${contentPath}/paging`,
@@ -16,10 +24,18 @@ export function pagingRoles(listQuery) {
     params: listQuery
   })
 }
+
 export function updateStatus(id, status) {
   const path = status.toLowerCase()
   return request({
     url: `${contentPath}/${id}/${path}`,
     method: 'put'
+  })
+}
+
+export function deleteRole(id) {
+  return request({
+    url: `${contentPath}/${id}`,
+    method: 'delete'
   })
 }

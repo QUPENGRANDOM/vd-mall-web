@@ -73,12 +73,42 @@
       :limit.sync="listQuery.size"
       @pagination="loadData"
     />
+
+    <el-dialog :visible.sync="dialogVisible" :title="dialogType==='edit'?'编辑角色':'添加角色'" @closed="dialogClosed">
+      <el-form :model="role" label-width="80px" label-position="left">
+        <el-form-item label="角色名">
+          <el-input v-model="role.roleName" placeholder="角色名" />
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input v-model="role.description" placeholder="描述" />
+        </el-form-item>
+        <el-form-item label="状态">
+          <el-switch
+            v-model="role.status"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-value="ENABLED"
+            inactive-value="DISABLED"
+          />
+        </el-form-item>
+      </el-form>
+
+      <div style="text-align:right;">
+        <el-button type="danger" @click="dialogVisible=false">取消</el-button>
+        <el-button type="primary" @click="saveOrUpdateRole">确认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { pagingRoles, updateStatus } from '@/api/role'
+import { pagingRoles, updateStatus, saveRole, deleteRole } from '@/api/role'
 import Pagination from '@/components/Pagination'
 
+const defaultRole = {
+  'description': '',
+  'roleName': '',
+  'status': 'ENABLED'
+}
 export default {
   components: { Pagination },
   filters: {
@@ -101,6 +131,9 @@ export default {
     return {
       list: null,
       total: 0,
+      role: defaultRole,
+      dialogVisible: false,
+      dialogType: 'new',
       listQuery: {
         page: 1,
         size: 10
@@ -123,10 +156,11 @@ export default {
       })
     },
     createRole() {
-      this.$message({
-        type: 'warning',
-        message: '该功能暂未实现'
-      })
+      this.dialogType = 'new'
+      this.dialogVisible = true
+    },
+    dialogClosed() {
+      this.role = defaultRole
     },
     editRole(row) {
       this.$message({
@@ -143,10 +177,39 @@ export default {
       row.status = 'DISABLED'
     },
     deleteRole(row) {
-      this.$message({
-        type: 'warning',
-        message: '该功能暂未实现'
+      this.$confirm('确定要删除该角色吗?', '注意', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
+        .then(async() => {
+          await deleteRole(row.id)
+          this.$message({
+            type: 'success',
+            message: '角色删除成功！'
+          })
+          this.loadData()
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
+    async saveOrUpdateRole() {
+      const isEdit = this.dialogType === 'edit'
+      console.log(JSON.stringify(this.role))
+      if (isEdit) {
+        // await updateUser(this.user.id, this.user)
+      } else {
+        await saveRole(this.role)
+      }
+      this.$message({
+        type: 'success',
+        message: isEdit ? '编辑' : '创建' + '用户成功！'
+      })
+      this.dialogVisible = false
+
+      this.loadData()
+      this.user = defaultRole
     }
   }
 }

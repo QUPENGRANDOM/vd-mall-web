@@ -58,7 +58,7 @@ const user = {
           const { nickname, avatar } = data
 
           commit('SET_NAME', nickname)
-          commit('SET_AVATAR', avatar)
+          commit('SET_AVATAR', avatar === null || avatar === '' || avatar === undefined ? '../assets/default_avatar.jpg' : avatar)
           resolve(data)
         }).catch(error => {
           reject(error)
