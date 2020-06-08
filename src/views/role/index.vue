@@ -101,7 +101,7 @@
   </div>
 </template>
 <script>
-import { pagingRoles, updateStatus, saveRole, deleteRole } from '@/api/role'
+import { pagingRoles, updateStatus, saveRole, deleteRole, updateRole, getInfoById } from '@/api/role'
 import Pagination from '@/components/Pagination'
 
 const defaultRole = {
@@ -162,11 +162,11 @@ export default {
     dialogClosed() {
       this.role = defaultRole
     },
-    editRole(row) {
-      this.$message({
-        type: 'warning',
-        message: '该功能暂未实现'
-      })
+    async editRole(row) {
+      this.dialogType = 'edit'
+      this.dialogVisible = true
+      const response = await getInfoById(row.id)
+      this.role = response.data
     },
     enabledRole(row) {
       updateStatus(row.id, 'ENABLED')
@@ -198,7 +198,7 @@ export default {
       const isEdit = this.dialogType === 'edit'
       console.log(JSON.stringify(this.role))
       if (isEdit) {
-        // await updateUser(this.user.id, this.user)
+        await updateRole(this.role.id, this.role)
       } else {
         await saveRole(this.role)
       }

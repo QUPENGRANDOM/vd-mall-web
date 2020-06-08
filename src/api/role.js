@@ -39,3 +39,18 @@ export function deleteRole(id) {
     method: 'delete'
   })
 }
+
+export function updateRole(id, data) {
+  return request({
+    url: `${contentPath}/${id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function getInfoById(id) {
+  return request({
+    url: `${contentPath}/${id}`,
+    method: 'get'
+  })
+}
